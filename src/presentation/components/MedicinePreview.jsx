@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Button, View } from 'react-native';
 
-export default function Alarm() {
+export default function MedicinePreview() {
 
   return (
     <View style={styles.container}>

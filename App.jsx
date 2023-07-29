@@ -13,7 +13,7 @@ export default function App() {
     <View style={styles.container}>
     <StatusBar style={styles.statusbar} />
     <TopBar activeScreen={activeScreen} setActiveScreen={setActiveScreen}/>
-    <Alarm />
+    
     </View>
   );
 }
