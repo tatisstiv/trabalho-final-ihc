@@ -15,19 +15,19 @@ import Sync from '../assets/sync_icon.png'
 export default function TopBar({ activeScreen, setActiveScreen }) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('today')}>
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => { if(activeScreen !== 'today') { setActiveScreen('today') }}}>
         <Image source={activeScreen === 'today' ? ClockFilled : Clock} />
         <Text>Hoje</Text>
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('medicines')}>
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => { if(activeScreen !== 'medicines') { setActiveScreen('medicines') }}}>
         <Image source={activeScreen === 'medicines' ? PillFilled : Pill} />
         <Text>Remédios</Text>
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('calendar')}>
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => { if(activeScreen !== 'calendar') { setActiveScreen('calendar') }}}>
         <Image source={activeScreen === 'calendar' ? CalendarFilled : Calendar} />
         <Text>Calendário</Text>
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('sync')}>
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => { if(activeScreen !== 'sync') { setActiveScreen('sync') }}}>
         <Image source={activeScreen === 'sync' ? SyncFilled : Sync} />
         <Text>Sincronização</Text>
       </TouchableOpacity>
