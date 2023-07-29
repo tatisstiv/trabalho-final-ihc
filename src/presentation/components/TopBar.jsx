@@ -1,24 +1,36 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
-export default function TopBar() {
+import ClockFilled from '../assets/clock_icon_filled.png'
+import Clock from '../assets/clock_icon.png'
+
+import PillFilled from '../assets/pill_icon_filled.png'
+import Pill from '../assets/pill_icon.png'
+
+import CalendarFilled from '../assets/calendar_icon_filled.png'
+import Calendar from '../assets/calendar_icon.png'
+
+import SyncFilled from '../assets/sync_icon_filled.png'
+import Sync from '../assets/sync_icon.png'
+
+export default function TopBar({ activeScreen, setActiveScreen }) {
   return (
     <View style={styles.container}>
-      <View style={styles.topBarItem}>
-        <Image source={require("../assets/clock_icon_filled.png")} />
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('today')}>
+        <Image source={activeScreen === 'today' ? ClockFilled : Clock} />
         <Text>Hoje</Text>
-      </View>
-      <View style={styles.topBarItem}>
-        <Image source={require("../assets/pill_icon.png")} />
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('medicines')}>
+        <Image source={activeScreen === 'medicines' ? PillFilled : Pill} />
         <Text>Remédios</Text>
-      </View>
-      <View style={styles.topBarItem}>
-        <Image source={require("../assets/calendar_icon.png")} />
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('calendar')}>
+        <Image source={activeScreen === 'calendar' ? CalendarFilled : Calendar} />
         <Text>Calendário</Text>
-      </View>
-      <View style={styles.topBarItem}>
-        <Image source={require("../assets/sync_icon.png")} />
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => setActiveScreen('sync')}>
+        <Image source={activeScreen === 'sync' ? SyncFilled : Sync} />
         <Text>Sincronização</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -29,17 +41,17 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingBottom: 10,
     paddingTop: 40,
-    display: "flex",
-    flexDirection: "row",
-    backgroundColor: "#d9d9d9",
-    height: "84px",
-    alignItems: "center",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: '#d9d9d9',
+    height: '84px',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   topBarItem: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
