@@ -11,6 +11,7 @@ import Calendar from '../assets/calendar_icon.png'
 
 import SyncFilled from '../assets/sync_icon_filled.png'
 import Sync from '../assets/sync_icon.png'
+import { storeData } from '../../storage/async-storage-functions';
 
 export default function TopBar({ activeScreen, setActiveScreen }) {
   return (
