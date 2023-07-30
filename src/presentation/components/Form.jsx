@@ -1,159 +1,274 @@
-import { Text, View, TextInput, Button, Alert } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import DatePicker from "react-native-modern-datepicker";
-import { storeData } from "../../storage/async-storage-functions";
+import {
+  Text,
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  FlatList,
+} from "react-native";
+import { Formik } from "formik";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons/faTrashCan";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { removeValue, storeData } from "../../storage/async-storage-functions";
 import { useState } from "react";
 
-export function Form() {
-  const [name, setName] = useState();
-  
-  const [start,setStart] = useState();
-  const [days,setDays] = useState();
-  const [time,setTime] = useState();
-  const [dosage,setDosage] = useState();
-  const [daysToNotify,setDaysToNotify] = useState();
-  
-  const [howManyLeft, setHowManyLeft] = useState();
+import { DaysItem } from "./DaysItem";
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-    },
-  });
-  const onSubmit = (data) => storeData(data.name, data);
+function formatDate(date) {
+  const year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+
+  if (day < 10) day = "0" + day;
+  if (month < 10) month = "0" + month;
+
+  return day + "/" + month + "/" + year;
+}
+
+const daysData = [
+  {
+    id: "dom",
+    title: "D",
+  },
+  {
+    id: "seg",
+    title: "S",
+  },
+  {
+    id: "ter",
+    title: "T",
+  },
+  {
+    id: "qua",
+    title: "Q",
+  },
+  {
+    id: "qui",
+    title: "Q",
+  },
+  {
+    id: "sex",
+    title: "S",
+  },
+  {
+    id: "sab",
+    title: "S",
+  },
+];
+
+export function Form() {
+  const [start, setStart] = useState(new Date());
+  const [showStart, setShowStart] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  const showStartDatePicker = () => {
+    setShowStart(true);
+  };
 
   return (
-    <View>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
+    <View style={{ padding: 10 }}>
+      <Formik
+        initialValues={{
+          name: "",
+          start: new Date(),
+          days: [],
+          time: "",
+          dosage: "",
+          currentQuantity: "",
+          daysToNotify: "",
         }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Remédio"
-            onBlur={onBlur}
-            onChangeText={(e) => setName(e.target.value)}
-            value={name}
-          />
+        onSubmit={(values) => storeData(values.name, values)}
+      >
+        {({ handleChange, handleSubmit, values, setFieldValue }) => (
+          <View style={styles.container}>
+            <View style={styles.fieldAndValue}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                Remédio:{" "}
+              </Text>
+              <TextInput
+                style={styles.nameInput}
+                value={values.name}
+                onChangeText={handleChange("name")}
+              />
+            </View>
+            <View style={styles.fieldAndValue}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>Início: </Text>
+              <TouchableOpacity onPress={showStartDatePicker}>
+                <Text style={{ fontSize: 20 }}>{formatDate(values.start)}</Text>
+              </TouchableOpacity>
+              {showStart && (
+                <DateTimePicker
+                  style={{ width: 200, alignSelf: "center" }}
+                  date={start}
+                  mode="date"
+                  display="calendar"
+                  placeholder="select date"
+                  format="DD MMM YYYY"
+                  minDate="01 Jan 2021"
+                  maxDate="30 Dec 2025"
+                  confirmBtnText="Confirmar"
+                  cancelBtnText="Cancelar"
+                  onChange={(event, newStart) => {
+                    setFieldValue("start", newStart);
+                    setShowStart(false);
+                  }}
+                  value={values.start}
+                />
+              )}
+            </View>
+            <View style={styles.fieldAndValue}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>Dias: </Text>
+              <SafeAreaView style={styles.daysContainer}>
+                <FlatList
+                  data={daysData}
+                  horizontal
+                  renderItem={({ item }) => (
+                    <DaysItem
+                      id={item.id}
+                      title={item.title}
+                      selected={!!selected.includes(item.id)}
+                      onSelect={(id) => {
+                        if (selected.includes(item.id)) {
+                          setFieldValue(
+                            "days",
+                            selected.filter((day) => day != item.id)
+                          );
+                          setSelected(selected.filter((day) => day != item.id));
+                        } else {
+                          setFieldValue("days", [...selected, id]);
+                          setSelected([...selected, id]);
+                        }
+                      }}
+                    />
+                  )}
+                  keyExtractor={(item) => item.id}
+                  extraData={selected}
+                />
+              </SafeAreaView>
+            </View>
+            <View style={styles.fieldAndValue}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                Horários:
+              </Text>
+              <TextInput
+                style={styles.timeInput}
+                value={values.time}
+                onChangeText={handleChange("time")}
+              />
+            </View>
+            <View style={styles.fieldAndValue}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>Dose: </Text>
+              <TextInput
+                style={styles.dosageInput}
+                value={values.dosage}
+                onChangeText={handleChange("dosage")}
+              />
+              <Text> comprimido(s)</Text>
+            </View>
+            <View style={styles.fieldAndValue}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                Quantidade atual:{" "}
+              </Text>
+              <TextInput
+                style={styles.dosageInput}
+                value={values.currentQuantity}
+                onChangeText={handleChange("currentQuantity")}
+              />
+              <Text> comprimido(s)</Text>
+            </View>
+            <View style={styles.fieldAndValue}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                Dias até Notificação:{" "}
+              </Text>
+              <TextInput
+                style={styles.daysToNotifyInput}
+                value={values.daysToNotify}
+                onChangeText={handleChange("daysToNotify")}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={styles.actionButton}
+            >
+              <FontAwesomeIcon icon={faCheck} style={{ color: "#1F8F3D" }} />
+              <Text style={{ color: "#1F8F3D", fontSize: 20 }}>
+                Salvar alterações
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton} onPress={() => removeValue(values.name)}>
+              <FontAwesomeIcon icon={faTrashCan} style={{ color: "#E34848" }} />
+              <Text style={{ color: "#E34848", fontSize: 20 }}>
+                Excluir remédio
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
-        name="name"
-      />
-      {errors.name && <Text>This is required.</Text>}
-
-      <View>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Data de Início"
-            onBlur={onBlur}
-            onChangeText={(e) => setName(e.target.value)}
-            value={start}
-          />
-        )}
-        name="start"
-      />
-      {errors.start && <Text>This is required.</Text>}
-
-        <View>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Dias"
-            onBlur={onBlur}
-            onChangeText={(e) => setName(e.target.value)}
-            value={days}
-          />
-        )}
-        name="days"
-      />
-      {errors.days && <Text>This is required.</Text>}
-
-          <View>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Horário"
-            onBlur={onBlur}
-            onChangeText={(e) => setName(e.target.value)}
-            value={time}
-          />
-        )}
-        name="time"
-      />
-      {errors.time && <Text>This is required.</Text>}
-
-            <View>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Dose"
-            onBlur={onBlur}
-            onChangeText={(e) => setName(e.target.value)}
-            value={dosage}
-          />
-        )}
-        name="dosage"
-      />
-      {errors.dosage && <Text>This is required.</Text>}
-
-              <View>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Dias até Notificação"
-            onBlur={onBlur}
-            onChangeText={(e) => setName(e.target.value)}
-            value={daysToNotify}
-          />
-        )}
-        name="daysToNotify"
-      />
-      {errors.daysToNotify && <Text>This is required.</Text>}
-
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Quantos comprimidos faltam"
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-        name="howManyLeft"
-      />
-      {errors.howManyLeft && <Text>This is required.</Text>}
-
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      </Formik>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  nameInput: {
+    borderColor: "black",
+    borderWidth: 1,
+    width: 206,
+    paddingLeft: 5,
+    fontSize: 20,
+  },
+  startInput: {
+    borderColor: "black",
+    borderWidth: 1,
+    width: 155,
+  },
+  timeInput: {
+    borderColor: "black",
+    borderWidth: 1,
+    width: 84,
+    paddingLeft: 5,
+    marginLeft: 5,
+    fontSize: 20,
+  },
+  dosageInput: {
+    borderColor: "black",
+    borderWidth: 1,
+    width: 50,
+    paddingLeft: 5,
+    fontSize: 20,
+  },
+  daysToNotifyInput: {
+    borderColor: "black",
+    borderWidth: 1,
+    width: 70,
+    paddingLeft: 5,
+    fontSize: 20,
+  },
+  fieldAndValue: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  actionButton: {
+    display: "flex",
+    flexDirection: "row",
+    width: 224,
+    height: 46,
+    backgroundColor: "#d9d9d9",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: "auto",
+    marginRight: "auto",
+    gap: 10,
+    marginTop: 10,
+  },
+});

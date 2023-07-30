@@ -1,4 +1,3 @@
-import {LocaleConfig} from 'react-native-calendars';
 import React, {useState} from 'react';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
@@ -39,7 +38,7 @@ LocaleConfig.locales['br'] = {
 
 LocaleConfig.defaultLocale = 'br';
 
-const App = () => {
+const CalendarComponent = () => {
   const [selected, setSelected] = useState('');
 
   return (
@@ -54,4 +53,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default CalendarComponent;

@@ -21,7 +21,7 @@ export default function TopBar({ activeScreen, setActiveScreen }) {
         <Text>Hoje</Text>
       </TouchableOpacity>
       <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => { if(activeScreen !== 'medicines') { setActiveScreen('medicines') }}}>
-        <Image source={activeScreen === 'medicines' ? PillFilled : Pill} />
+        <Image source={activeScreen === 'medicines' || activeScreen === 'form' ? PillFilled : Pill} />
         <Text>Remédios</Text>
       </TouchableOpacity>
       <TouchableOpacity activeOpacity={1} style={styles.topBarItem} onPress={() => { if(activeScreen !== 'calendar') { setActiveScreen('calendar') }}}>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#d9d9d9',
     height: '84px',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   topBarItem: {
     display: 'flex',
