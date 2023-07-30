@@ -6,6 +6,13 @@ import { useState } from "react";
 
 export function Form() {
   const [name, setName] = useState();
+  
+  const [start,setStart] = useState();
+  const [days,setDays] = useState();
+  const [time,setTime] = useState();
+  const [dosage,setDosage] = useState();
+  const [daysToNotify,setDaysToNotify] = useState();
+  
   const [howManyLeft, setHowManyLeft] = useState();
 
   const {
@@ -38,6 +45,96 @@ export function Form() {
         name="name"
       />
       {errors.name && <Text>This is required.</Text>}
+
+      <View>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Data de Início"
+            onBlur={onBlur}
+            onChangeText={(e) => setName(e.target.value)}
+            value={start}
+          />
+        )}
+        name="start"
+      />
+      {errors.start && <Text>This is required.</Text>}
+
+        <View>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Dias"
+            onBlur={onBlur}
+            onChangeText={(e) => setName(e.target.value)}
+            value={days}
+          />
+        )}
+        name="days"
+      />
+      {errors.days && <Text>This is required.</Text>}
+
+          <View>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Horário"
+            onBlur={onBlur}
+            onChangeText={(e) => setName(e.target.value)}
+            value={time}
+          />
+        )}
+        name="time"
+      />
+      {errors.time && <Text>This is required.</Text>}
+
+            <View>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Dose"
+            onBlur={onBlur}
+            onChangeText={(e) => setName(e.target.value)}
+            value={dosage}
+          />
+        )}
+        name="dosage"
+      />
+      {errors.dosage && <Text>This is required.</Text>}
+
+              <View>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Dias até Notificação"
+            onBlur={onBlur}
+            onChangeText={(e) => setName(e.target.value)}
+            value={daysToNotify}
+          />
+        )}
+        name="daysToNotify"
+      />
+      {errors.daysToNotify && <Text>This is required.</Text>}
 
       <Controller
         control={control}
