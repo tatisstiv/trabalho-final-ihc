@@ -12,13 +12,17 @@ import { Formik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons/faTrashCan";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { removeValue, storeData } from "../../storage/async-storage-functions";
+import {
+  removeValue,
+  storeData,
+} from "../../storage/async-storage-functions";
 import { useState } from "react";
 
 import { DaysItem } from "./DaysItem";
 
-function formatDate(date) {
+export function formatDate(date) {
   const year = date.getFullYear();
   let month = date.getMonth() + 1;
   let day = date.getDate();
@@ -60,10 +64,10 @@ const daysData = [
   },
 ];
 
-export function Form() {
+export function Form({ setActiveScreen, medicineToEdit }) {
   const [start, setStart] = useState(new Date());
   const [showStart, setShowStart] = useState(false);
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(medicineToEdit.days);
 
   const showStartDatePicker = () => {
     setShowStart(true);
@@ -71,17 +75,14 @@ export function Form() {
 
   return (
     <View style={{ padding: 10 }}>
+    <TouchableOpacity style={styles.backButton} onPress={() => setActiveScreen('medicines')}>
+    <FontAwesomeIcon icon={faChevronLeft} style={{ color: "#000000" }}/>
+      <Text style={{ fontSize: 20 }}>Voltar</Text>
+    </TouchableOpacity>
       <Formik
-        initialValues={{
-          name: "",
-          start: new Date(),
-          days: [],
-          time: "",
-          dosage: "",
-          currentQuantity: "",
-          daysToNotify: "",
-        }}
-        onSubmit={(values) => storeData(values.name, values)}
+        initialValues={{...medicineToEdit, start: new Date(medicineToEdit.start)}}
+        onSubmit={(values) =>  {storeData(values.name, values); setActiveScreen('medicines')}}
+        enableReinitialize
       >
         {({ handleChange, handleSubmit, values, setFieldValue }) => (
           <View style={styles.container}>
@@ -102,7 +103,7 @@ export function Form() {
               </TouchableOpacity>
               {showStart && (
                 <DateTimePicker
-                  style={{ width: 200, alignSelf: "center" }}
+                  style={{ width: 200, alignSelf: "center", borderColor: "black", borderWidth: 1 }}
                   date={start}
                   mode="date"
                   display="calendar"
@@ -130,7 +131,7 @@ export function Form() {
                     <DaysItem
                       id={item.id}
                       title={item.title}
-                      selected={!!selected.includes(item.id)}
+                      selected={!!values.days.includes(item.id)}
                       onSelect={(id) => {
                         if (selected.includes(item.id)) {
                           setFieldValue(
@@ -199,12 +200,21 @@ export function Form() {
                 Salvar alterações
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton} onPress={() => removeValue(values.name)}>
+            {
+              medicineToEdit.name.length > 0 &&
+              <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => {
+                removeValue(values.name);
+                setActiveScreen('medicines');
+                }}
+            >
               <FontAwesomeIcon icon={faTrashCan} style={{ color: "#E34848" }} />
               <Text style={{ color: "#E34848", fontSize: 20 }}>
                 Excluir remédio
               </Text>
             </TouchableOpacity>
+            }
           </View>
         )}
       </Formik>
@@ -271,4 +281,11 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 10,
   },
+  backButton: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: 'center',
+    gap: 3,
+    marginBottom: 5
+  }
 });

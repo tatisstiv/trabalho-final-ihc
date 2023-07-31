@@ -9,7 +9,7 @@ export const storeData = async (key, value) => {
   }
 };
 
-export const getData = async (key) => {
+export const getValue = async (key) => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
@@ -28,10 +28,12 @@ export const removeValue = async (key) => {
 
 export const getAllValues = async () => {
   let keys = []
+  let jsonValues = []
   try {
     keys = await AsyncStorage.getAllKeys()
-    return await AsyncStorage.multiGet(keys)
+    jsonValues = await AsyncStorage.multiGet(keys)
+    return jsonValues.map(value => JSON.parse(value[1]));
   } catch(e) {
-    console.log('error on fetching data');
+    console.log('error on fetching data: ' + e);
   }
 }

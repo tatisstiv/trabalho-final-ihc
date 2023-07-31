@@ -25,7 +25,10 @@
     "react-native-calendars": "^1.1300.0",
     "react-native-datepicker": "^1.7.2",
     "react-native-fontawesome": "^7.0.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "expo-device": "~5.4.0",
+    "expo-background-fetch": "~11.3.0",
+    "expo-task-manager": "~11.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

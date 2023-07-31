@@ -3,56 +3,145 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Text
+  Text,
+  FlatList,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
+import { formatDate } from "./Form";
 
-export default function MedicinePreview({ setActiveScreen }) {
+export default function MedicinePreview({
+  setActiveScreen,
+  medicines,
+  setMedicineToEdit,
+}) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.medicineContainer} onPress={() => setActiveScreen('form')}>
-        <TouchableOpacity style={styles.nameAndInfos} onPress={() => setActiveScreen('form')}>
-          <Text style={{ fontSize: 24, textAlign: "right" }}>Vitamina D</Text>
-          <TouchableOpacity onPress={() => setActiveScreen('form')}>
-            <TouchableOpacity style={styles.fieldValue} onPress={() => setActiveScreen('form')}>
-              <Text
-                style={{ fontSize: 16, textAlign: "right", fontWeight: "bold" }}
-              >
-                Horários: 
+      <FlatList
+        data={medicines}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.medicineContainer}
+            onPress={() => {
+              setMedicineToEdit(item.name);
+              setActiveScreen("form");
+            }}
+          >
+            <TouchableOpacity
+              style={styles.nameAndInfos}
+              onPress={() => {
+                setMedicineToEdit(item.name);
+                setActiveScreen("form");
+              }}
+            >
+              <Text style={{ fontSize: 24, textAlign: "right" }}>
+                {item.name}
               </Text>
-              <Text style={{ fontSize: 16, textAlign: "right" }}>13:30</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setMedicineToEdit(item.name);
+                  setActiveScreen("form");
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.fieldValue}
+                  onPress={() => {
+                    setMedicineToEdit(item.name);
+                    setActiveScreen("form");
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      textAlign: "right",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Horários: 
+                  </Text>
+                  <Text style={{ fontSize: 16, textAlign: "right" }}>
+                    {item.time}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.fieldValue}
+                  onPress={() => {
+                    setMedicineToEdit(item.name);
+                    setActiveScreen("form");
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      textAlign: "right",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Frequência: 
+                  </Text>
+                  <Text style={{ fontSize: 16, textAlign: "right" }}>
+                    Todos os dias
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.fieldValue}
+                  onPress={() => {
+                    setMedicineToEdit(item.name);
+                    setActiveScreen("form");
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      textAlign: "right",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Repor em: 
+                  </Text>
+                  <Text style={{ fontSize: 16, textAlign: "right" }}>
+                    {formatDate(new Date(Date.now() + item.currentQuantity * 24 * 60 * 60 * 1000))}
+                  </Text>
+                </TouchableOpacity>
+              </TouchableOpacity>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.fieldValue} onPress={() => setActiveScreen('form')}>
-              <Text
-                style={{ fontSize: 16, textAlign: "right", fontWeight: "bold" }}
+            <TouchableOpacity
+              style={styles.buttons}
+              onPress={() => {
+                setMedicineToEdit(item.name);
+                setActiveScreen("form");
+              }}
+            >
+              <TouchableOpacity
+                style={styles.editIcon}
+                onPress={() => {
+                  setMedicineToEdit(item.name);
+                  setActiveScreen("form");
+                }}
               >
-                Frequência: 
-              </Text>
-              <Text style={{ fontSize: 16, textAlign: "right" }}>
-                Todos os dias
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.fieldValue} onPress={() => setActiveScreen('form')}>
-              <Text
-                style={{ fontSize: 16, textAlign: "right", fontWeight: "bold" }}
+                <FontAwesomeIcon icon={faEdit} style={{ color: "#000000" }} size={20}/>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setMedicineToEdit(item.name);
+                  setActiveScreen("form");
+                }}
               >
-                Repor em: 
-              </Text>
-              <Text style={{ fontSize: 16, textAlign: "right" }}>
-                13/08/2023
-              </Text>
+                <Text style={styles.moreInfos}>Mais infos</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
           </TouchableOpacity>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttons} onPress={() => setActiveScreen('form')}>
-          <TouchableOpacity style={styles.editIcon} onPress={() => setActiveScreen('form')}>
-            <FontAwesomeIcon icon={faEdit} style={{ color: "#000000" }} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setActiveScreen('form')}>
-            <Text style={styles.moreInfos}>Mais infos</Text>
-          </TouchableOpacity>
-        </TouchableOpacity>
+        )}
+      />
+      <TouchableOpacity
+        onPress={() => {
+          setMedicineToEdit('');
+          setActiveScreen("form");
+        }}
+        style={styles.addIconContainer}
+      >
+        <FontAwesomeIcon icon={faPlus} style={{ color: "#ffffff" }} size={55}/>
       </TouchableOpacity>
     </View>
   );
@@ -64,7 +153,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     gap: 5,
-    marginTop: 20
+    marginTop: 5,
+    height: '70%'
   },
   medicineContainer: {
     display: "flex",
@@ -73,7 +163,9 @@ const styles = StyleSheet.create({
     width: 324,
     height: 150,
     padding: 20,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    marginTop: 15,
+    borderRadius: 2
   },
   nameAndInfos: {
     display: "flex",
@@ -103,5 +195,18 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
+  },
+  addIconContainer: {
+    backgroundColor: "#bbe3bc",
+    width: 60,
+    height: 60,
+    marginLeft: 'auto',
+    marginRight: 20,
+    marginTop: 'auto',
+    marginBottom: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100
   }
 });
