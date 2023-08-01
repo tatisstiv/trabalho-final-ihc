@@ -14,15 +14,13 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons/faTrashCan";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import {
-  removeValue,
-  storeData,
-} from "../../storage/async-storage-functions";
+import { removeValue, storeData } from "../../storage/async-storage-functions";
 import { useState } from "react";
 
 import { DaysItem } from "./DaysItem";
 
 export function formatDate(date) {
+  console.log(date)
   const year = date.getFullYear();
   let month = date.getMonth() + 1;
   let day = date.getDate();
@@ -75,13 +73,24 @@ export function Form({ setActiveScreen, medicineToEdit }) {
 
   return (
     <View style={{ padding: 10 }}>
-    <TouchableOpacity style={styles.backButton} onPress={() => setActiveScreen('medicines')}>
-    <FontAwesomeIcon icon={faChevronLeft} style={{ color: "#000000" }}/>
-      <Text style={{ fontSize: 20 }}>Voltar</Text>
-    </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => setActiveScreen("medicines")}
+      >
+        <FontAwesomeIcon icon={faChevronLeft} style={{ color: "#000000" }} />
+        <Text style={{ fontSize: 20 }}>Voltar</Text>
+      </TouchableOpacity>
       <Formik
-        initialValues={{...medicineToEdit, start: new Date(medicineToEdit.start)}}
-        onSubmit={(values) =>  {storeData(values.name, values); setActiveScreen('medicines')}}
+        initialValues={{
+          ...medicineToEdit,
+          start: new Date(medicineToEdit.start),
+          lastQuantityUpdate: new Date(medicineToEdit.lastQuantityUpdate),
+        }}
+        onSubmit={(values) => {
+          console.log(values)
+          storeData(values.name, values);
+          setActiveScreen("medicines");
+        }}
         enableReinitialize
       >
         {({ handleChange, handleSubmit, values, setFieldValue }) => (
@@ -103,7 +112,12 @@ export function Form({ setActiveScreen, medicineToEdit }) {
               </TouchableOpacity>
               {showStart && (
                 <DateTimePicker
-                  style={{ width: 200, alignSelf: "center", borderColor: "black", borderWidth: 1 }}
+                  style={{
+                    width: 200,
+                    alignSelf: "center",
+                    borderColor: "black",
+                    borderWidth: 1,
+                  }}
                   date={start}
                   mode="date"
                   display="calendar"
@@ -177,7 +191,10 @@ export function Form({ setActiveScreen, medicineToEdit }) {
               <TextInput
                 style={styles.dosageInput}
                 value={values.currentQuantity}
-                onChangeText={handleChange("currentQuantity")}
+                onChangeText={(text) => {
+                  setFieldValue('currentQuantity', text);
+                  setFieldValue('lastQuantityUpdate', new Date().setHours(0, 0, 0));
+                  }}
               />
               <Text> comprimido(s)</Text>
             </View>
@@ -200,21 +217,23 @@ export function Form({ setActiveScreen, medicineToEdit }) {
                 Salvar alterações
               </Text>
             </TouchableOpacity>
-            {
-              medicineToEdit.name.length > 0 &&
+            {medicineToEdit.name.length > 0 && (
               <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => {
-                removeValue(values.name);
-                setActiveScreen('medicines');
+                style={styles.actionButton}
+                onPress={() => {
+                  removeValue(values.name);
+                  setActiveScreen("medicines");
                 }}
-            >
-              <FontAwesomeIcon icon={faTrashCan} style={{ color: "#E34848" }} />
-              <Text style={{ color: "#E34848", fontSize: 20 }}>
-                Excluir remédio
-              </Text>
-            </TouchableOpacity>
-            }
+              >
+                <FontAwesomeIcon
+                  icon={faTrashCan}
+                  style={{ color: "#E34848" }}
+                />
+                <Text style={{ color: "#E34848", fontSize: 20 }}>
+                  Excluir remédio
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </Formik>
@@ -284,8 +303,8 @@ const styles = StyleSheet.create({
   backButton: {
     display: "flex",
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: "center",
     gap: 3,
-    marginBottom: 5
-  }
+    marginBottom: 5,
+  },
 });

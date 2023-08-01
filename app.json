@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/presentation/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.tatiane.stivelman.trabalhofinalihc"
     },
     "web": {
       "favicon": "./src/presentation/assets/favicon.png"
@@ -29,6 +30,11 @@
     "androidStatusBar": {
       "backgroundColor": "#0e0633",
       "translucent": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c40537ed-ef33-49d1-8008-54fb1620da09"
+      }
     }
   }
 }

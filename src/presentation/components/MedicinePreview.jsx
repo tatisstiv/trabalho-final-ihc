@@ -101,7 +101,7 @@ export default function MedicinePreview({
                     Repor em: 
                   </Text>
                   <Text style={{ fontSize: 16, textAlign: "right" }}>
-                    {formatDate(new Date(Date.now() + item.currentQuantity * 24 * 60 * 60 * 1000))}
+                    {formatDate(new Date(item.lastQuantityUpdate + item.currentQuantity * 24 * 60 * 60 * 1000))}
                   </Text>
                 </TouchableOpacity>
               </TouchableOpacity>

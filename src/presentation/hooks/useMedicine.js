@@ -24,6 +24,7 @@ export function useMedicine(activeScreen) {
         dosage: "",
         currentQuantity: "",
         daysToNotify: "",
+        lastQuantityUpdate: new Date().setHours(0, 0, 0)
       });
     }
   }, [medicineToEditKey]);
