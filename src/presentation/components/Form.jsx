@@ -84,7 +84,7 @@ export function Form({ setActiveScreen, medicineToEdit }) {
         initialValues={{
           ...medicineToEdit,
           start: new Date(medicineToEdit.start),
-          lastQuantityUpdate: new Date(medicineToEdit.lastQuantityUpdate),
+          lastQuantityUpdate: medicineToEdit.lastQuantityUpdate,
         }}
         onSubmit={(values) => {
           console.log(values)
